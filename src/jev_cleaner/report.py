@@ -10,6 +10,7 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
+from .containers import PRUNE_COMMANDS
 from .evidence import humanize_size
 from .models import CandidateGroup, Judgment, Verdict
 from .policy import Thresholds
@@ -111,7 +112,7 @@ def render_plan(verdicts: list[Verdict]) -> str:
         total = sum(v.group.size_bytes for v in rows)
         lines.append(f"# ---- {tier}: {len(rows)} directories, {humanize_size(total)} ----")
         for v in rows:
-            command = f"rm -rf '{v.group.path}'"
+            command = PRUNE_COMMANDS.get(v.group.path, f"rm -rf '{v.group.path}'")
             if tier == "clean":
                 lines.append(f"{command}  # {v.why}")
             else:
