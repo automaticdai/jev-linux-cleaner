@@ -1635,8 +1635,8 @@ def battery() -> dict[str, Choice | Score | Noul]:
                 "on this system."
             ),
             criteria={
-                "yes": "Nothing in `system.possibly_related_installed_software` is the software that owns this directory, and `system.inventory_is_complete` is true.",
-                "no": "`system.possibly_related_installed_software` includes the software that owns this directory, or the directory belongs to the operating system itself.",
+                "true": "Nothing in `system.possibly_related_installed_software` is the software that owns this directory, and `system.inventory_is_complete` is true.",
+                "false": "`system.possibly_related_installed_software` includes the software that owns this directory, or the directory belongs to the operating system itself.",
             },
         ),
         "holds_credentials": Noul(
