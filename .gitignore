@@ -1,0 +1,20 @@
+# run artifacts contain absolute paths and filenames from the scanned machine
+runs/
+*.run.json
+plan.sh
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# local config overrides
+policy.local.yaml
+roots.local.yaml
+.env
