@@ -1083,7 +1083,7 @@ def test_ages_become_phrases_never_dates():
 
 
 def test_location_convention_explains_xdg():
-    assert "regenerable" in location_convention("/home/u/.cache/foo")
+    assert "regenerate" in location_convention("/home/u/.cache/foo")
     assert "settings" in location_convention("/home/u/.config/foo")
     assert location_convention("/var/log/nginx") != ""
 
