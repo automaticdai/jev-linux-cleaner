@@ -1,0 +1,18 @@
+# The scan surface. Editing this file widens or narrows the scan.
+# max_depth is how many levels below the root the walker descends.
+user:
+  - {path: ~/.cache, max_depth: 1}
+  - {path: ~/.local/share, max_depth: 1}
+  - {path: ~/.local/state, max_depth: 1}
+  - {path: ~/.config, max_depth: 1}
+  - {path: ~/.npm, max_depth: 1}
+  - {path: ~/.cargo/registry, max_depth: 1}
+  - {path: ~/go/pkg/mod/cache, max_depth: 1}
+  - {path: ~/.nv, max_depth: 1}
+system:
+  - {path: /var/cache/apt/archives, max_depth: 0}
+  - {path: /var/log, max_depth: 1}
+  - {path: /var/tmp, max_depth: 1}
+  - {path: /tmp, max_depth: 1}
+  - {path: /var/lib/snapd/snaps, max_depth: 0}
+  - {path: /var/cache/snapd, max_depth: 0}

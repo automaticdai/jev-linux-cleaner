@@ -19,3 +19,7 @@ policy.local.yaml
 roots.local.yaml
 .env
 .venv/
+
+# a captured scan names real directories (and so real projects) on the machine
+# that produced it; regenerate locally with scripts/capture_scan.py
+tests/fixtures/scan-ubuntu-2404.json
