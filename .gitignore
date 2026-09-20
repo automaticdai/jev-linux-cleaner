@@ -18,3 +18,4 @@ build/
 policy.local.yaml
 roots.local.yaml
 .env
+.venv/
