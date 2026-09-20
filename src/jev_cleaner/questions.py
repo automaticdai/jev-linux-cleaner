@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typesafe_sdk import Choice, Noul, Score
 
-BATTERY_VERSION = "1"
+BATTERY_VERSION = "3"
 
 CONTENT_KIND_CRITERIA: dict[str, str] = {
     "regenerable_cache": "Data the program rebuilds or re-downloads by itself the next time it runs.",
@@ -42,10 +42,28 @@ def battery() -> dict[str, Choice | Score | Noul]:
         ),
         "loss_if_deleted": Score(
             instructions=(
-                "What does the user lose if the directory `directory.path` is deleted "
-                "while the software that uses it stays installed?"
+                "The directory `directory.path` is deleted, and the software that uses it "
+                "is still installed. What does the user lose, and what would the user have "
+                "to do to get back to where they were?"
             ),
             criteria=list(LOSS_LEVELS),
+        ),
+        # The Score above barely separates a shader cache from 2 GB of browsers:
+        # asking the model to predict a consequence costs a hop it cannot afford.
+        # These two ask what is actually in the directory, which it reads well,
+        # and policy derives the restore effort from them in code.
+        "holds_installed_payload": Noul(
+            instructions=(
+                "The contents of `directory.path` are executable programs, browsers, runtimes or "
+                "model files that a separate install or download step placed there, rather than "
+                "data the program wrote for itself while running."
+            ),
+        ),
+        "fails_until_reinstall": Noul(
+            instructions=(
+                "With `directory.path` deleted, the software that uses it would report an error "
+                "telling the user to install or download something before it could run again."
+            ),
         ),
         "breaks_if_deleted": Noul(
             instructions=(
@@ -65,8 +83,8 @@ def battery() -> dict[str, Choice | Score | Noul]:
                 "on this system."
             ),
             criteria={
-                "true": "Nothing in `system.possibly_related_installed_software` is the software that owns this directory, and `system.inventory_is_complete` is true.",
-                "false": "`system.possibly_related_installed_software` includes the software that owns this directory, or the directory belongs to the operating system itself.",
+                "true": "The software that owns this directory has been removed from the system. `system.possibly_related_installed_software` is empty and the owning software is of a kind that `system.inventory_covers` would list if it were still installed.",
+                "false": "The owning software is still present, or it is of a kind `system.inventory_covers` does not list, such as a library, plugin or component bundled inside another program. An empty list on its own is not enough to answer true.",
             },
         ),
         "holds_credentials": Noul(

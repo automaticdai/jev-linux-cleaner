@@ -32,8 +32,23 @@ def test_collect_parses_dpkg_and_snap_output():
     assert {"firefox", "python3.12", "core22"} <= inv.names
 
 
-def test_collect_tolerates_a_missing_package_manager():
+def test_collect_tolerates_a_missing_package_manager(monkeypatch):
+    monkeypatch.setenv("PATH", "")
+
     def broken_runner(cmd: list[str]) -> str:
         raise FileNotFoundError(cmd[0])
 
     assert collect(runner=broken_runner).names == frozenset()
+
+
+def test_path_executables_are_part_of_the_inventory(tmp_path, monkeypatch):
+    """Regression: with dpkg alone, uv and playwright looked uninstalled, and
+    every cache directory they own was judged orphaned."""
+    (tmp_path / "uv").write_text("#!/bin/sh\n")
+    (tmp_path / "uv").chmod(0o755)
+    monkeypatch.setenv("PATH", str(tmp_path))
+
+    def no_packages(cmd: list[str]) -> str:
+        return ""
+
+    assert "uv" in collect(runner=no_packages).names

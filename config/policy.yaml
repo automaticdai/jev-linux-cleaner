@@ -1,0 +1,13 @@
+# Thresholds tuned against jev-1.13.0 and battery version 3.
+# Changing either invalidates these; re-run `pytest -m eval` after any edit.
+confidence_floor: 0.5        # below this the model is telling you it does not know
+clean_min_confidence: 0.7
+clean_max_loss: 2.0
+clean_max_breaks: 0.15
+clean_max_credentials: 0.10
+costly_min_payload: 0.6      # contents were put there by an install step
+costly_min_fails: 0.5        # deleting it produces an error telling the user to reinstall
+keep_min_loss: 4.0
+keep_min_breaks: 0.5
+orphan_min: 0.8
+orphan_idle_days: 30         # a directory touched this recently is in use, whatever the model says

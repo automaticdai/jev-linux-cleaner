@@ -12,13 +12,17 @@ DOMINANCE = 0.6
 CAP = 400
 MANIFEST_EXCERPT_CHARS = 2000
 
+# These describe WHERE a directory sits, never what that implies about deleting
+# it. An earlier version said ~/.cache "holds data an application can
+# regenerate"; that is a conclusion, and the model adopted it over the evidence,
+# rating a 2 GB browser download as costless to delete. State the location only.
 CONVENTIONS = {
-    "/.cache/": "inside ~/.cache, which by XDG convention holds data an application can regenerate",
-    "/.config/": "inside ~/.config, which by XDG convention holds settings the user chose",
-    "/.local/share/": "inside ~/.local/share, which by XDG convention holds an application's durable data",
-    "/.local/state/": "inside ~/.local/state, which by XDG convention holds state that persists between runs, such as logs and history",
+    "/.cache/": "inside ~/.cache, the XDG location applications are meant to use for cache data. Applications do not always follow this convention, so the location alone does not establish what is stored here.",
+    "/.config/": "inside ~/.config, the XDG location for user configuration. Applications do not always follow this convention.",
+    "/.local/share/": "inside ~/.local/share, the XDG location for application data. Applications do not always follow this convention.",
+    "/.local/state/": "inside ~/.local/state, the XDG location for state that persists between runs. Applications do not always follow this convention.",
     "/var/log": "inside /var/log, the system log directory",
-    "/var/cache": "inside /var/cache, which holds data the system can fetch or rebuild again",
+    "/var/cache": "inside /var/cache, the system cache directory",
     "/var/tmp": "inside /var/tmp, for temporary files that survive a reboot",
     "/tmp": "inside /tmp, for temporary files cleared on reboot",
 }
@@ -144,7 +148,11 @@ def build_state(group: CandidateGroup, inventory, now: float, distribution: str 
         "system": {
             "distribution": distribution,
             "possibly_related_installed_software": inventory.related(name),
-            "inventory_is_complete": True,
+            "inventory_covers": (
+                "software installed through apt, snap or docker, and commands available on PATH. "
+                "Libraries, plugins and components that ship inside another program are not listed, "
+                "so an empty list is not by itself proof that the owning software is gone."
+            ),
         },
     }
 

@@ -30,9 +30,14 @@ def test_ages_become_phrases_never_dates():
     assert age_phrase(NOW - 45 * DAY, NOW) == "one to three months ago"
 
 
-def test_location_convention_explains_xdg():
-    assert "regenerate" in location_convention("/home/u/.cache/foo")
-    assert "settings" in location_convention("/home/u/.config/foo")
+def test_location_convention_states_the_location_without_prejudging_it():
+    """Regression: saying ~/.cache holds regenerable data made the model adopt
+    that conclusion over the evidence, rating a 2 GB browser download costless."""
+    cache = location_convention("/home/u/.cache/foo")
+    assert "~/.cache" in cache
+    assert "do not always follow" in cache
+    assert "regenerable" not in cache
+    assert "configuration" in location_convention("/home/u/.config/foo")
     assert location_convention("/var/log/nginx") != ""
 
 
@@ -51,4 +56,4 @@ def test_state_contains_only_words_for_numbers_and_only_related_packages():
 def test_state_reports_when_no_related_software_is_installed():
     state = build_state(group(path="/home/u/.config/abandoned-tool"), Inventory(frozenset({"firefox"})), now=NOW)
     assert state["system"]["possibly_related_installed_software"] == []
-    assert state["system"]["inventory_is_complete"] is True
+    assert "not by itself proof" in state["system"]["inventory_covers"]

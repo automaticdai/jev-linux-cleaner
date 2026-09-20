@@ -1,0 +1,55 @@
+{
+ "state": {
+  "directory": {
+   "path": "/home/yfrl/.cache/ms-playwright",
+   "name": "ms-playwright",
+   "location_convention": "inside ~/.cache, which by XDG convention holds data an application can regenerate",
+   "size": "2.0 GB",
+   "size_bucket": "very large, over 1 GB",
+   "file_count": "about 12,000 files",
+   "last_modified": "within the last week",
+   "oldest_content": "over six months ago",
+   "top_extensions": [
+    ".so (3,100 files)",
+    ".pak (210 files)"
+   ],
+   "subdirectories": [
+    "chromium-1140",
+    "firefox-1450"
+   ],
+   "sample_names": [
+    "chromium-1140/chrome-linux/chrome"
+   ]
+  },
+  "system": {
+   "distribution": "Ubuntu 24.04",
+   "possibly_related_installed_software": [
+    "gh"
+   ],
+   "inventory_is_complete": true
+  }
+ },
+ "judgment": {
+  "content_kind": "regenerable_cache",
+  "content_kind_confidence": 0.47,
+  "content_kind_probabilities": {
+   "application_settings": 0.0,
+   "installed_program_files": 0.01,
+   "user_content": 0.0,
+   "regenerable_cache": 0.53,
+   "unclear": 0.0,
+   "transient_runtime_state": 0.0,
+   "downloaded_artifacts": 0.46,
+   "build_output": 0.0
+  },
+  "loss_if_deleted": 1.09,
+  "loss_confidence": 0.92,
+  "breaks_if_deleted": 0.23,
+  "recreated_automatically": 0.59,
+  "orphaned": 0.66,
+  "holds_credentials": 0.03,
+  "privacy_traces": 0.05,
+  "model": "jev-1.13.0",
+  "escalated": false
+ }
+}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 import subprocess
 from collections.abc import Callable
@@ -65,4 +66,27 @@ def collect(runner: Runner | None = None) -> Inventory:
     docker = _run(runner, ["docker", "image", "ls", "--format", "{{.Repository}}"])
     names.update(line.strip() for line in docker.splitlines() if line.strip() and line.strip() != "<none>")
 
+    names.update(path_executables())
+
     return Inventory(names=frozenset(names))
+
+
+def path_executables() -> set[str]:
+    """Commands on $PATH.
+
+    dpkg alone is not an inventory of installed software: uv, playwright and
+    huggingface arrive through pip and npm and appear in no package database.
+    Without this, every one of their cache directories looks orphaned.
+    """
+    found: set[str] = set()
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        if not directory:
+            continue
+        try:
+            with os.scandir(directory) as it:
+                for entry in it:
+                    if not entry.name.startswith(".") and entry.is_file(follow_symlinks=True):
+                        found.add(entry.name)
+        except OSError:
+            continue
+    return found

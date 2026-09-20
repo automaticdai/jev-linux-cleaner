@@ -43,6 +43,8 @@ class Judgment:
     loss_confidence: float = 0.0
     breaks_if_deleted: float = 0.0
     recreated_automatically: float = 0.0
+    holds_installed_payload: float = 0.0
+    fails_until_reinstall: float = 0.0
     orphaned: float = 0.0
     holds_credentials: float = 0.0
     privacy_traces: float = 0.0

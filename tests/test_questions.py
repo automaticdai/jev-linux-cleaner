@@ -4,7 +4,8 @@ from jev_cleaner.questions import BATTERY_VERSION, CONTENT_KINDS, LOSS_LEVELS, b
 def test_battery_has_every_question_from_the_spec():
     assert set(battery()) == {
         "content_kind", "loss_if_deleted", "breaks_if_deleted",
-        "recreated_automatically", "orphaned", "holds_credentials", "privacy_traces",
+        "recreated_automatically", "holds_installed_payload", "fails_until_reinstall",
+        "orphaned", "holds_credentials", "privacy_traces",
     }
 
 
@@ -26,4 +27,4 @@ def test_every_question_names_the_directory_by_state_path():
 
 
 def test_battery_version_is_pinned():
-    assert BATTERY_VERSION == "1"
+    assert BATTERY_VERSION == "3"
