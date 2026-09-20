@@ -177,8 +177,29 @@ def cmd_explain(args) -> int:
     return 1
 
 
+def refuse_if_root() -> bool:
+    """jev-cleaner must not be run under sudo.
+
+    Two things go wrong at once. The API key and the network client end up in a
+    root process, which is the opposite of what probe.py exists for. And sudo
+    resets HOME, so every ~ root resolves under /root and the scan silently
+    reports on the wrong account: a real run went from 59 candidate directories
+    to 14 without saying anything was amiss.
+    """
+    if os.geteuid() != 0:
+        return False
+    console.print("[red]jev-cleaner must not be run with sudo.[/red]\n")
+    console.print("It escalates on its own, only for the read-only probe, and only with --system.")
+    console.print("Run it as yourself; it will ask for your password when it needs the probe:\n")
+    console.print("  [bold]jev-cleaner scan --system --containers[/bold]\n")
+    console.print("Under sudo, HOME becomes /root, so the scan would cover root's home and not yours.")
+    return True
+
+
 def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(message)s")
+    if refuse_if_root():
+        return 2
     parser = argparse.ArgumentParser(prog="jev-cleaner", description="Report reclaimable disk space. Deletes nothing.")
     parser.add_argument("--runs", default="runs", help="directory holding run artifacts")
     sub = parser.add_subparsers(dest="command", required=True)

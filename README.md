@@ -70,6 +70,12 @@ Privileged scanning runs `jev_cleaner/probe.py` under `sudo`: a stdlib-only,
 read-only walker that prints JSON and exits. The main process never runs as
 root, and the probe never sees the API key.
 
+**Do not run jev-cleaner itself with sudo** — it refuses, and exits 2. Escalating
+the whole tool puts your API key and the network client in a root process, and
+sudo resets `HOME`, so every `~` root would resolve under `/root` and the scan
+would quietly report on the wrong account. Run `jev-cleaner scan --system` as
+yourself; it prompts for your password when it needs the probe.
+
 ## What the model is and is not asked
 
 Jev answers seven questions per directory, all in one request. Six are about

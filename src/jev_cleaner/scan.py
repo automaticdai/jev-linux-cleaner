@@ -20,11 +20,18 @@ Runner = Callable[[list[str]], str]
 MANIFEST_FILES = ("package.json", "metadata.json", "manifest.json", "CACHEDIR.TAG", "README.md", "README")
 
 
-def sudo_command(roots: list[Root]) -> list[str]:
-    """The exact command used for privileged scanning. Read-only by construction."""
+def sudo_command(roots: list[Root], interactive: bool = False) -> list[str]:
+    """The exact command used for privileged scanning. Read-only by construction.
+
+    `-n` keeps sudo from blocking on a password prompt in a script. When there
+    is a terminal to prompt on, we drop it and let the user type their password:
+    the previous behaviour skipped system scanning with only a log line, which
+    is what sent one user to `sudo jev-cleaner` instead.
+    """
     max_depth = max((r.max_depth for r in roots), default=1)
+    prefix = ["sudo"] if interactive else ["sudo", "-n"]
     return [
-        "sudo", "-n", sys.executable, "-m", "jev_cleaner.probe",
+        *prefix, sys.executable, "-m", "jev_cleaner.probe",
         "--scope", "system",
         "--max-depth", str(max_depth),
         "--roots", *[r.path for r in roots],
@@ -38,7 +45,11 @@ def _default_runner(cmd: list[str]) -> str:
     return result.stdout
 
 
-def scan(roots: list[Root], runner: Runner | None = None) -> list[ScanRecord]:
+def scan(
+    roots: list[Root],
+    runner: Runner | None = None,
+    interactive: bool | None = None,
+) -> list[ScanRecord]:
     """Walk every root. A failure in one scope never discards another scope's results."""
     records: list[ScanRecord] = []
 
@@ -48,11 +59,22 @@ def scan(roots: list[Root], runner: Runner | None = None) -> list[ScanRecord]:
 
     system_roots = [r for r in roots if r.scope == "system"]
     if system_roots:
+        run = runner or _default_runner
+        may_prompt = sys.stdin.isatty() if interactive is None else interactive
         try:
-            output = (runner or _default_runner)(sudo_command(system_roots))
+            output = run(sudo_command(system_roots))
+        except Exception as exc:  # noqa: BLE001
+            output = None
+            if may_prompt:
+                log.info("sudo needs a password for the read-only system probe")
+                try:
+                    output = run(sudo_command(system_roots, interactive=True))
+                except Exception as retry_exc:  # noqa: BLE001
+                    log.warning("system scan skipped: %s", retry_exc)
+            else:
+                log.warning("system scan skipped: %s", exc)
+        if output:
             records.extend(record_from_dict(raw) for raw in json.loads(output))
-        except Exception as exc:  # noqa: BLE001 - a scope failure is reported, not fatal
-            log.warning("system scan skipped: %s", exc)
 
     return records
 
