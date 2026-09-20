@@ -1,0 +1,21 @@
+[project]
+name = "jev-cleaner"
+version = "0.1.0"
+description = "A Linux disk cleaner that judges unknown leftovers with Jev"
+requires-python = ">=3.12"
+dependencies = ["typesafe-sdk>=0.7.0", "pyyaml>=6.0", "rich>=13.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+jev-cleaner = "jev_cleaner.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-m 'not eval'"
+markers = ["eval: agreement against hand-labelled fixtures; opt-in, may call the API"]

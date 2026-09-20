@@ -1,0 +1,162 @@
+[
+ {
+  "path": "~/.cache/mesa_shader_cache",
+  "expected": "clean",
+  "note": "GPU shader cache, rebuilt on demand"
+ },
+ {
+  "path": "~/.cache/mesa_shader_cache_db",
+  "expected": "clean",
+  "note": "same, index form"
+ },
+ {
+  "path": "~/.cache/fontconfig",
+  "expected": "clean",
+  "note": "font index, rebuilt automatically"
+ },
+ {
+  "path": "~/.cache/matplotlib",
+  "expected": "clean",
+  "note": "font list cache, rebuilt on import"
+ },
+ {
+  "path": "~/.cache/gstreamer-1.0",
+  "expected": "clean",
+  "note": "plugin registry, rebuilt on demand"
+ },
+ {
+  "path": "~/.cache/qtshadercache-x86_64-little_endian-lp64",
+  "expected": "clean",
+  "note": "Qt shader cache"
+ },
+ {
+  "path": "~/.cache/node-gyp",
+  "expected": "clean",
+  "note": "node headers, refetched automatically"
+ },
+ {
+  "path": "~/.cache/hugo_cache",
+  "expected": "clean",
+  "note": "hugo module/image cache, rebuilt"
+ },
+ {
+  "path": "~/.cache/taichi",
+  "expected": "clean",
+  "note": "compiled kernel cache, rebuilt"
+ },
+ {
+  "path": "~/.cache/pip",
+  "expected": "clean",
+  "note": "wheel cache; pip refetches silently"
+ },
+ {
+  "path": "~/.npm/_cacache",
+  "expected": "clean",
+  "note": "npm content cache; npm refetches silently"
+ },
+ {
+  "path": "~/.npm/_logs",
+  "expected": "clean",
+  "note": "npm debug logs"
+ },
+ {
+  "path": "~/.cache/uv",
+  "expected": "costly",
+  "note": "5.7 GB wheel/sdist cache; safe but a large refetch"
+ },
+ {
+  "path": "~/.cache/ms-playwright",
+  "expected": "costly",
+  "note": "browser binaries; needs `playwright install`"
+ },
+ {
+  "path": "~/.cache/huggingface",
+  "expected": "costly",
+  "note": "model weights; slow redownload"
+ },
+ {
+  "path": "~/.cache/torch",
+  "expected": "clean",
+  "note": "compiled CUDA kernels, regenerated on demand (checked: no weights here)"
+ },
+ {
+  "path": "~/.cargo/registry/src",
+  "expected": "costly",
+  "note": "unpacked crate sources; cargo refetches, costs time"
+ },
+ {
+  "path": "~/.cargo/registry/cache",
+  "expected": "costly",
+  "note": "crate archives; refetched over the network"
+ },
+ {
+  "path": "~/.npm/_npx",
+  "expected": "costly",
+  "note": "npx-installed packages; refetched on next use"
+ },
+ {
+  "path": "~/.cache/vscode-ripgrep",
+  "expected": "costly",
+  "note": "downloaded binary, fetched by an install step"
+ },
+ {
+  "path": "~/.cache/gh",
+  "expected": "costly",
+  "note": "gh cache can include auth-adjacent state"
+ },
+ {
+  "path": "~/.local/share/claude",
+  "expected": "keep",
+  "note": "installed program data, not a cache"
+ },
+ {
+  "path": "~/.local/share/i4j_jres",
+  "expected": "keep",
+  "note": "bundled JREs an installer placed"
+ },
+ {
+  "path": "~/.config/gcloud",
+  "expected": "keep",
+  "note": "cloud credentials and config"
+ },
+ {
+  "path": "~/.config/gh",
+  "expected": "keep",
+  "note": "github CLI config and auth"
+ },
+ {
+  "path": "~/.config/git",
+  "expected": "keep",
+  "note": "user git configuration"
+ },
+ {
+  "path": "~/.config/uv",
+  "expected": "keep",
+  "note": "user tool configuration"
+ },
+ {
+  "path": "~/.config/zellij",
+  "expected": "keep",
+  "note": "user configuration"
+ },
+ {
+  "path": "~/.config/btop",
+  "expected": "keep",
+  "note": "user configuration"
+ },
+ {
+  "path": "~/.config/subtitle-marquee",
+  "expected": "keep",
+  "note": "own project's settings"
+ },
+ {
+  "path": "~/.local/share/applications",
+  "expected": "keep",
+  "note": "desktop entries the user installed"
+ },
+ {
+  "path": "~/.local/state/ibkr",
+  "expected": "keep",
+  "note": "application state, not a cache"
+ }
+]

@@ -1083,7 +1083,7 @@ def test_ages_become_phrases_never_dates():
 
 
 def test_location_convention_explains_xdg():
-    assert "regenerable" in location_convention("/home/u/.cache/foo")
+    assert "regenerate" in location_convention("/home/u/.cache/foo")
     assert "settings" in location_convention("/home/u/.config/foo")
     assert location_convention("/var/log/nginx") != ""
 
@@ -1635,8 +1635,8 @@ def battery() -> dict[str, Choice | Score | Noul]:
                 "on this system."
             ),
             criteria={
-                "yes": "Nothing in `system.possibly_related_installed_software` is the software that owns this directory, and `system.inventory_is_complete` is true.",
-                "no": "`system.possibly_related_installed_software` includes the software that owns this directory, or the directory belongs to the operating system itself.",
+                "true": "Nothing in `system.possibly_related_installed_software` is the software that owns this directory, and `system.inventory_is_complete` is true.",
+                "false": "`system.possibly_related_installed_software` includes the software that owns this directory, or the directory belongs to the operating system itself.",
             },
         ),
         "holds_credentials": Noul(
