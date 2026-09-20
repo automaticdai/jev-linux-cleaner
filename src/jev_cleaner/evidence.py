@@ -35,9 +35,15 @@ def group_records(
     by_path = {r.path: r for r in records}
     root_paths = {r.path for r in roots}
 
+    # Children come from the records themselves, never from record.subdirs: the
+    # probe truncates that list, and a truncated list silently hides whatever
+    # sorts after the cut. That is how a 5.8 GB cache goes unreported.
+    by_parent: dict[str, list[ScanRecord]] = {}
+    for record in records:
+        by_parent.setdefault(os.path.dirname(record.path), []).append(record)
+
     def children_of(record: ScanRecord) -> list[ScanRecord]:
-        found = [by_path.get(os.path.join(record.path, name)) for name in record.subdirs]
-        return [c for c in found if c is not None]
+        return sorted(by_parent.get(record.path, []), key=lambda r: r.path)
 
     def resolve(record: ScanRecord) -> list[ScanRecord]:
         kids = children_of(record)

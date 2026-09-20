@@ -56,3 +56,16 @@ def test_groups_are_capped_largest_first():
 def test_empty_directories_are_dropped():
     records = [rec("/h/.cache", 0, subdirs=["empty"]), rec("/h/.cache/empty", 0)]
     assert group_records(records, [Root("/h/.cache", "user", 1)]) == []
+
+
+def test_children_are_found_even_when_the_probe_truncated_subdirs():
+    """The probe caps `subdirs`; grouping must not depend on that capped list.
+
+    Regression: a real scan hid a 5.8 GB directory because it sorted past the cap.
+    """
+    names = [f"child{i:02d}" for i in range(30)]
+    records = [rec("/h/.cache", 900 * MB, subdirs=names[:20])]
+    records += [rec(f"/h/.cache/{n}", 30 * MB) for n in names]
+    groups = group_records(records, [Root("/h/.cache", "user", 1)])
+    assert len(groups) == 30
+    assert "/h/.cache/child29" in {g.path for g in groups}
