@@ -93,6 +93,11 @@ Two findings from building this, both visible in the git history:
   download; both come back at ~1.0. Two literal questions about what the
   directory *contains* separate them cleanly (0.06 versus 0.81), so policy
   derives restore effort from those instead.
+- Gating on that Score's *confidence* then misrouted 14% of a real run. A Score
+  answer landing between two levels splits its mass across them, so its
+  confidence is near zero by construction: `/var/log/apt` was read as transient
+  runtime state with content confidence 1.00 and sent to `review` by a loss
+  confidence of 0.00. Confidence is only a gate on the primary judgment now.
 
 ## Evaluation
 

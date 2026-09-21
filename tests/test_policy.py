@@ -36,7 +36,10 @@ def j(**over) -> Judgment:
     (j(breaks_if_deleted=0.6), "keep"),
     (j(content_kind="unclear", content_kind_confidence=0.9), "review"),
     (j(content_kind_confidence=0.45), "review"),
-    (j(loss_confidence=0.4), "review"),
+    # loss_confidence is not a gate: a Score between two levels has near-zero
+    # confidence by construction, which used to misroute 14% of a real run
+    (j(loss_confidence=0.0), "clean"),
+    (j(loss_confidence=0.0, loss_if_deleted=4.5), "keep"),
     (j(content_kind_confidence=0.6), "review"),
     (j(orphaned=0.85), "orphan"),
     (j(orphaned=0.85, content_kind="user_content"), "keep"),
@@ -49,6 +52,13 @@ def j(**over) -> Judgment:
 ])
 def test_tiering_boundaries(judgment, expected):
     assert tier_for(judgment, T)[0] == expected
+
+
+def test_a_weak_credential_signal_is_not_reported_as_certainty():
+    """p=0.17 is a hint, not 'you will be signed out'."""
+    tier, why = tier_for(j(holds_credentials=0.17), T)
+    assert tier == "costly"
+    assert "may hold login state" in why
 
 
 def test_an_install_payload_outranks_a_confident_cache_reading():

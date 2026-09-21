@@ -68,8 +68,12 @@ def tier_for(judgment: Judgment, t: Thresholds) -> tuple[str, str]:
         return "review", "the evidence does not identify what is stored here"
     if judgment.content_kind_confidence < t.confidence_floor:
         return "review", f"low confidence on content ({judgment.content_kind_confidence:.2f})"
-    if judgment.loss_confidence < t.confidence_floor:
-        return "review", f"low confidence on loss ({judgment.loss_confidence:.2f})"
+    # loss_confidence is deliberately NOT a gate. A Score answer that lands
+    # between two levels splits its mass across them, so its confidence is near
+    # zero by construction: /var/log/apt came back as transient runtime state at
+    # content confidence 1.00 and was sent to review by a loss confidence of
+    # 0.00. Nine of 64 rows in one run were misrouted this way. The loss Score
+    # is only ever read in the conservative direction below, so it needs no gate.
 
     if judgment.orphaned >= t.orphan_min:
         return "orphan", f"owning software appears to be gone (p={judgment.orphaned:.2f})"
@@ -79,7 +83,7 @@ def tier_for(judgment: Judgment, t: Thresholds) -> tuple[str, str]:
     if judgment.fails_until_reinstall >= t.costly_min_fails:
         return "costly", f"deleting it means reinstalling something (p={judgment.fails_until_reinstall:.2f})"
     if judgment.holds_credentials > t.clean_max_credentials:
-        return "costly", f"deleting it would sign you out (p={judgment.holds_credentials:.2f})"
+        return "costly", f"may hold login state (p={judgment.holds_credentials:.2f})"
     if judgment.content_kind == "downloaded_artifacts":
         return "costly", "downloaded artifacts: re-fetching them costs time and bandwidth"
 
