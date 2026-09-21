@@ -58,3 +58,19 @@ def test_explain_prints_every_probability(tmp_path, capsys):
 
 def test_unknown_run_is_an_error_not_a_traceback(tmp_path, capsys):
     assert main(["report", "--run", str(tmp_path / "nope")]) == 1
+
+
+def test_running_as_root_is_refused(monkeypatch, capsys):
+    """sudo puts the API key in a root process and resets HOME to /root, so the
+    scan silently covers the wrong account."""
+    monkeypatch.setattr("os.geteuid", lambda: 0)
+    assert main(["scan"]) == 2
+    out = capsys.readouterr().out
+    assert "must not be run with sudo" in out
+    assert "/root" in out
+
+
+def test_a_normal_user_is_not_refused(tmp_path, monkeypatch):
+    monkeypatch.setattr("os.geteuid", lambda: 1000)
+    directory = a_run(tmp_path)
+    assert main(["report", "--run", str(directory), "--format", "json"]) == 0
