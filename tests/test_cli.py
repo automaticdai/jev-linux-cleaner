@@ -74,3 +74,16 @@ def test_a_normal_user_is_not_refused(tmp_path, monkeypatch):
     monkeypatch.setattr("os.geteuid", lambda: 1000)
     directory = a_run(tmp_path)
     assert main(["report", "--run", str(directory), "--format", "json"]) == 0
+
+
+def test_report_retiers_with_current_policy_by_default(tmp_path, capsys):
+    """A run stores the tiers in force when it was taken. Reading those back is
+    how a policy fix goes unnoticed, so re-tiering is the default."""
+    directory = a_run(tmp_path)  # stored tier is "costly"
+    policy = tmp_path / "policy.yaml"
+    policy.write_text("clean_max_credentials: 0.9\nclean_min_confidence: 0.5\nclean_max_loss: 3.0\n")
+    main(["report", "--run", str(directory), "--policy", str(policy), "--format", "json"])
+    assert '"tier": "costly"' in capsys.readouterr().out  # downloaded_artifacts stays costly
+
+    main(["report", "--run", str(directory), "--as-recorded", "--format", "json"])
+    assert '"tier": "costly"' in capsys.readouterr().out

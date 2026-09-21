@@ -121,7 +121,10 @@ def cmd_report(args) -> int:
     if document is None:
         return 1
     rows = report_module.verdicts_from_run(document)
-    if args.policy:
+    # Re-tier with the current policy by default. The tiers frozen into a run
+    # are a snapshot of whichever thresholds were in force when it was taken,
+    # and reading them back is how a policy fix goes unnoticed.
+    if not args.as_recorded:
         thresholds = load_thresholds(args.policy)
         retiered: list[Verdict] = []
         for row in rows:
@@ -220,7 +223,9 @@ def main(argv: list[str] | None = None) -> int:
     r = sub.add_parser("report", help="render or re-tier a stored run; makes no requests")
     r.add_argument("--run", default="latest")
     r.add_argument("--tier", default=None)
-    r.add_argument("--policy", default=None)
+    r.add_argument("--policy", default=None, help="policy file to re-tier with (default: the shipped one)")
+    r.add_argument("--as-recorded", action="store_true",
+                   help="show the tiers as they were when the run was taken, without re-tiering")
     r.add_argument("--format", choices=("table", "json"), default="table")
     r.set_defaults(func=cmd_report)
 
